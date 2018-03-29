@@ -78,6 +78,13 @@ describe('striptags', function() {
 
             assert.equal(striptags(html), text);
         });
+
+        it('should not strip not tags', function() {
+            let html = '<this is not tag',
+                text = '<this is not tag';
+
+            assert.equal(striptags(html), text);
+        })
     });
 
     describe('#allowed_tags', function() {

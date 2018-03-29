@@ -32,7 +32,7 @@
         allowable_tags  = allowable_tags || [];
         tag_replacement = tag_replacement || '';
 
-        let context = init_context(allowable_tags, tag_replacement);
+        let context = init_context(allowable_tags, tag_replacement, true);
 
         return function striptags_stream(html) {
             return striptags_internal(html || '', context);
@@ -41,7 +41,7 @@
 
     striptags.init_streaming_mode = init_striptags_stream;
 
-    function init_context(allowable_tags, tag_replacement) {
+    function init_context(allowable_tags, tag_replacement, in_streaming_mode = false) {
         allowable_tags = parse_allowable_tags(allowable_tags);
 
         return {
@@ -51,7 +51,8 @@
             state         : STATE_PLAINTEXT,
             tag_buffer    : '',
             depth         : 0,
-            in_quote_char : ''
+            in_quote_char : '',
+            in_streaming_mode: in_streaming_mode
         };
     }
 
@@ -89,8 +90,14 @@
                             break;
                         }
 
-                        // we're seeing a nested '<'
-                        depth++;
+                        if (!context.in_streaming_mode) {
+                            output  += tag_buffer;
+                            tag_buffer = '';
+                        } else {
+                            depth++;
+                        }
+
+
                         break;
 
                     case '>':
@@ -100,7 +107,7 @@
                         }
 
                         // something like this is happening: '<<>>'
-                        if (depth) {
+                        if (depth && context.in_streaming_mode) {
                             depth--;
 
                             break;
@@ -183,6 +190,10 @@
         context.tag_buffer    = tag_buffer;
         context.depth         = depth;
         context.in_quote_char = in_quote_char;
+
+        if (!context.in_streaming_mode && tag_buffer.length > 0) {
+            output += tag_buffer;
+        }
 
         return output;
     }
