@@ -11,12 +11,12 @@
         Symbol.nonNative = true;
     }
 
-    const STATE_PLAINTEXT = Symbol('plaintext');
-    const STATE_HTML      = Symbol('html');
-    const STATE_COMMENT   = Symbol('comment');
+    var STATE_PLAINTEXT = Symbol('plaintext');
+    var STATE_HTML      = Symbol('html');
+    var STATE_COMMENT   = Symbol('comment');
 
-    const ALLOWED_TAGS_REGEX  = /<(\w*)>/g;
-    const NORMALIZE_TAG_REGEX = /<\/?([^\s\/>]+)/;
+    var ALLOWED_TAGS_REGEX  = /<(\w*)>/g;
+    var NORMALIZE_TAG_REGEX = /<\/?([^\s\/>]+)/;
 
     function striptags(html, allowable_tags, tag_replacement) {
         html            = html || '';
