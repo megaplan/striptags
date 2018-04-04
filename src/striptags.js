@@ -23,7 +23,7 @@
         allowable_tags  = allowable_tags || [];
         tag_replacement = tag_replacement || '';
 
-        let context = init_context(allowable_tags, tag_replacement);
+        var context = init_context(allowable_tags, tag_replacement);
 
         return striptags_internal(html, context);
     }
@@ -32,7 +32,7 @@
         allowable_tags  = allowable_tags || [];
         tag_replacement = tag_replacement || '';
 
-        let context = init_context(allowable_tags, tag_replacement, true);
+        var context = init_context(allowable_tags, tag_replacement, true);
 
         return function striptags_stream(html) {
             return striptags_internal(html || '', context);
@@ -41,7 +41,7 @@
 
     striptags.init_streaming_mode = init_striptags_stream;
 
-    function init_context(allowable_tags, tag_replacement, in_streaming_mode = false) {
+    function init_context(allowable_tags, tag_replacement, in_streaming_mode) {
         allowable_tags = parse_allowable_tags(allowable_tags);
 
         return {
@@ -52,22 +52,22 @@
             tag_buffer    : '',
             depth         : 0,
             in_quote_char : '',
-            in_streaming_mode: in_streaming_mode
+            in_streaming_mode: in_streaming_mode || false
         };
     }
 
     function striptags_internal(html, context) {
-        let allowable_tags  = context.allowable_tags;
-        let tag_replacement = context.tag_replacement;
+        var allowable_tags  = context.allowable_tags;
+        var tag_replacement = context.tag_replacement;
 
-        let state         = context.state;
-        let tag_buffer    = context.tag_buffer;
-        let depth         = context.depth;
-        let in_quote_char = context.in_quote_char;
-        let output        = '';
+        var state         = context.state;
+        var tag_buffer    = context.tag_buffer;
+        var depth         = context.depth;
+        var in_quote_char = context.in_quote_char;
+        var output        = '';
 
-        for (let idx = 0, length = html.length; idx < length; idx++) {
-            let char = html[idx];
+        for (var idx = 0, length = html.length; idx < length; idx++) {
+            var char = html[idx];
 
             if (state === STATE_PLAINTEXT) {
                 switch (char) {
@@ -199,10 +199,10 @@
     }
 
     function parse_allowable_tags(allowable_tags) {
-        let tag_set = new Set();
+        var tag_set = new Set();
 
         if (typeof allowable_tags === 'string') {
-            let match;
+            var match;
 
             while ((match = ALLOWED_TAGS_REGEX.exec(allowable_tags))) {
                 tag_set.add(match[1]);
@@ -224,7 +224,7 @@
     }
 
     function normalize_tag(tag_buffer) {
-        let match = NORMALIZE_TAG_REGEX.exec(tag_buffer);
+        var match = NORMALIZE_TAG_REGEX.exec(tag_buffer);
 
         return match ? match[1].toLowerCase() : null;
     }
